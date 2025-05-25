@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  balance   Float    @default(10000000)
+  lands     Land[]
+  bids      Bid[]
+  createdAt DateTime @default(now())
+}
+
+model Land {
+  id          Int      @id @default(autoincrement())
+  ownerId     Int
+  owner       User     @relation(fields: [ownerId], references: [id])
+  coordinates Json //{x:number,y:number}
+  price       Float
+  isForSale   Boolean  @default(false)
+  bids        Bid[]
+  createdAt   DateTime @default(now())
+}
+
+model Bid {
+  id        Int      @id @default(autoincrement())
+  landId    Int
+  land      Land     @relation(fields: [landId], references: [id])
+  bidderId  Int
+  bidder    User     @relation(fields: [bidderId], references: [id])
+  amount    Float
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  landId    Int
+  sellerId  Int
+  buyerId   Int
+  amount    Float
+  createdAt DateTime @default(now())
+}
