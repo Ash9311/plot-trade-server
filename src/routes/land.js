@@ -3,7 +3,7 @@ const auth = require('../middleware/auth');
 const Land = require('../models/Land');
 const router = express.Router();
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth,async (req, res) => {
     const { coordinates, price } = req.body;
     const land = await Land.create({
         ownerId: req.user.id,

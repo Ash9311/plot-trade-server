@@ -1,10 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require("body-parser");
+const mongoose = require('mongoose')
+
 const authRoutes = require('./routes/auth');
 const landRoutes = require('./routes/land');
 const bidRoutes = require('./routes/bid');
 const transactionRoutes = require('./routes/transactions');
-const mongoose = require('mongoose')
+
 require('dotenv').config();
 
 const app = express();
@@ -14,6 +17,8 @@ mongoose.connect(process.env.DATABASE_URL, { useNewUrlParser: true, useUnifiedTo
     .catch(() => { console.error('MongoDB connection error') })
 
 app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use('/api/v1/auth', authRoutes);
